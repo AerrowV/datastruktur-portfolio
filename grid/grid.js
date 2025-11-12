@@ -65,21 +65,23 @@ export class Grid {
   }
 
   neighbours({ row, col }) {
-    const neighbourinos = [];
+    const list = [];
+    
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dr === 0 && dc === 0) { 
+          continue;
+        }
 
-    for (let n of [
-      this.north({ row, col }),
-      this.south({ row, col }),
-      this.west({ row, col }),
-      this.east({ row, col }),
-    ]) {
+        const r = row + dr;
+        const c = col + dc;
 
-      if (n) { 
-        neighbourinos.push({ row: n.row, col: n.col });
+        if (!this.outOfBounds(r, c)) {
+          list.push({ row: r, col: c });
+        }
       }
     }
-
-    return neighbourinos;
+    return list;
   }
 
   neighbourValues({ row, col }) {
