@@ -10,7 +10,6 @@ export default class SinglyLinkedList {
     this.head = null;
   }
 
-
   printList() {
     if (!this.head) {
       console.log("List is empty");
