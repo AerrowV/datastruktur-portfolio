@@ -3,13 +3,17 @@
  * @author Johan Poulsen>
 */
 
-const createNode = (data, next = null) => ({ data, next });
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
 export default class SinglyLinkedList {
   constructor() {
     this.head = null;
   }
-
 
   printList() {
     if (!this.head) {
@@ -19,7 +23,6 @@ export default class SinglyLinkedList {
 
     let current = this.head;
     let index = 0;
-
     while (current) {
       console.log(
         "Node",
@@ -35,7 +38,7 @@ export default class SinglyLinkedList {
   }
 
   add(data) {
-    const node = createNode(data);
+    const node = new Node(data);
     if (!this.head) {
       this.head = node;
       return;
@@ -121,19 +124,17 @@ export default class SinglyLinkedList {
 
   getPreviousNode(node) {
     if (!this.head || node === this.head) return null;
-
     let cur = this.head;
     while (cur && cur.next !== node) {
       cur = cur.next;
     }
-
     return cur && cur.next === node ? cur : null;
   }
 
   insert(index, data) {
     if (index < 0) return;
+    const node = new Node(data);
 
-    const node = createNode(data);
     if (index === 0) {
       node.next = this.head;
       this.head = node;
@@ -151,7 +152,8 @@ export default class SinglyLinkedList {
     if (!targetNode || !this.head) return null;
 
     if (targetNode === this.head) {
-      const newNode = createNode(data, this.head);
+      const newNode = new Node(data);
+      newNode.next = this.head;
       this.head = newNode;
       return newNode;
     }
@@ -159,14 +161,16 @@ export default class SinglyLinkedList {
     const prev = this.getPreviousNode(targetNode);
     if (!prev) return null;
 
-    const newNode = createNode(data, targetNode);
+    const newNode = new Node(data);
+    newNode.next = targetNode;
     prev.next = newNode;
     return newNode;
   }
 
   insertAfter(node, data) {
     if (!node) return null;
-    const newNode = createNode(data, node.next);
+    const newNode = new Node(data);
+    newNode.next = node.next;
     node.next = newNode;
     return newNode;
   }
