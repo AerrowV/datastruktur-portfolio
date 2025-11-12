@@ -1,16 +1,16 @@
 export class Grid {
   constructor(rows, cols) {
-    this.rows = rows;
-    this.cols = cols;
-    this.arr = new Array(rows * cols).fill(undefined);
+    this._rows = rows;
+    this._cols = cols;
+    this.arr = new Array(rows * cols).fill(null);
   }
 
   rows() {
-    return this.rows;
+    return this._rows;
   }
 
   cols() {
-    return this.cols;
+    return this._cols;
   }
 
   size() {
@@ -22,7 +22,7 @@ export class Grid {
   }
 
   outOfBounds(row, col) {
-    return row < 0 || row >= this.rows || col < 0 || col >= this.cols;
+    return row < 0 || row >= this._rows || col < 0 || col >= this._cols;
   }
 
   indexFor({ row, col }) {
@@ -30,7 +30,7 @@ export class Grid {
       return undefined;
     }
 
-    const index = row * this.cols + col;
+    const index = row * this._cols + col;
 
     return index;
   }
@@ -41,8 +41,8 @@ export class Grid {
     }
 
     const rowCol = {
-      row: Math.floor(index / this.cols),
-      col: index % this.cols,
+      row: Math.floor(index / this._cols),
+      col: index % this._cols,
     };
 
     return rowCol;
@@ -83,39 +83,24 @@ export class Grid {
   }
 
   neighbourValues({ row, col }) {
-    const values = [];
-
-    for (let n of this.neighbours({ row, col })) {
-      const value = this.get(n);
-
-      values.push({ row: n.row, col: n.col, value });
+    if (this.outOfBounds(row, col)){
+      return [];
     }
 
+    const values = [];
+    for (const n of this.neighbours({ row, col })) {
+      values.push(this.get(n));
+    }
+    
     return values;
   }
 
   nextInRow({ row, col }) {
-    const c = col + 1;
-
-    if (this.outOfBounds(row, c)) {
-      return undefined;
-    }
-
-    const rowCol = { row, col: c, value: this.get({ row, col: c }) };
-
-    return rowCol;
+    return this.east({ row, col });
   }
 
   nextInCol({ row, col }) {
-    const r = row + 1;
-
-    if (this.outOfBounds(r, col)) {
-      return undefined;
-    }
-
-    const rowCol = { row: r, col, value: this.get({ row: r, col }) };
-
-    return rowCol;
+    return this.south({ row, col });
   }
 
   north({ row, col }) {
