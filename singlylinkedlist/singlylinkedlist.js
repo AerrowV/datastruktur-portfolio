@@ -5,57 +5,56 @@
 
 const createNode = (data, next = null) => ({ data, next });
 
-/*class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}*/
-
 export default class SinglyLinkedList {
   constructor() {
     this.head = null;
   }
 
-  printList() {
-    let arr = this.head;
-    let index = 0;
 
-    if (!arr) {
+  printList() {
+    if (!this.head) {
       console.log("List is empty");
       return;
     }
 
-    while (arr) {
-      console.log("Node", index, "data:", arr.data, "next:", arr.next ? "Node" : "null");
-      arr = arr.next;
+    let current = this.head;
+    let index = 0;
+
+    while (current) {
+      console.log(
+        "Node",
+        index,
+        "Data:",
+        current.data,
+        "Next:",
+        current.next ? "Node" : "null"
+      );
+      current = current.next;
       index++;
     }
   }
 
   add(data) {
     const node = createNode(data);
-
     if (!this.head) {
       this.head = node;
-    } else {
-      let arr = this.head;
-      while (arr.next) {
-        arr = arr.next;
-      }
-      arr.next = node;
+      return;
     }
+
+    let cur = this.head;
+    while (cur.next) {
+      cur = cur.next;
+    }
+    cur.next = node;
   }
 
   size() {
     let count = 0;
     let node = this.head;
-
     while (node) {
       count++;
       node = node.next;
     }
-
     return count;
   }
 
@@ -64,24 +63,29 @@ export default class SinglyLinkedList {
   }
 
   get(index) {
-    const node = this.getNode(index);
+    let node = this.head;
+    for (let i = 0; i < index; i++) {
+      if (!node) return null;
+      node = node.next;
+    }
     return node ? node.data : null;
   }
 
   set(index, data) {
-    const node = this.getNode(index);
-    if (node) {
-      node.data = data;
+    let node = this.head;
+    for (let i = 0; i < index; i++) {
+      if (!node) return;
+      node = node.next;
     }
+    if (node) node.data = data;
   }
 
   getNode(index) {
     let node = this.head;
-
     for (let i = 0; i < index; i++) {
+      if (!node) return null;
       node = node.next;
     }
-
     return node;
   }
 
@@ -91,95 +95,97 @@ export default class SinglyLinkedList {
 
   getLast() {
     let node = this.head;
+    if (!node) return null;
     while (node.next) {
       node = node.next;
     }
-
     return node.data;
   }
 
   getFirstNode() {
-    return this.head ? this.head : null;
+    return this.head;
   }
 
   getLastNode() {
     let node = this.head;
+    if (!node) return null;
     while (node.next) {
       node = node.next;
     }
-
     return node;
   }
 
   getNextNode(node) {
-    return node && node.next ? node.next : null;
+    return node ? node.next : null;
   }
 
   getPreviousNode(node) {
-    let arr = this.head;
-    while (arr.next && arr.next !== node) {
-      arr = arr.next;
+    if (!this.head || node === this.head) return null;
+
+    let cur = this.head;
+    while (cur && cur.next !== node) {
+      cur = cur.next;
     }
-    return arr.next === node ? arr : null;
+
+    return cur && cur.next === node ? cur : null;
   }
 
   insert(index, data) {
-    const node = createNode(data);
+    if (index < 0) return;
 
+    const node = createNode(data);
     if (index === 0) {
       node.next = this.head;
       this.head = node;
       return;
     }
 
-    let arr = this.getNode(index - 1);
-    node.next = arr.next;
-    arr.next = node;
+    const prev = this.getNode(index - 1);
+    if (!prev) return;
+
+    node.next = prev.next;
+    prev.next = node;
   }
 
-  insertBefore(node, data) {
-    if (!this.head || !node) return null;
+  insertBefore(targetNode, data) {
+    if (!targetNode || !this.head) return null;
 
-    if (node === this.head) {
-      const newNode = createNode(data);
-      newNode.next = this.head;
+    if (targetNode === this.head) {
+      const newNode = createNode(data, this.head);
       this.head = newNode;
       return newNode;
     }
 
-    const prev = this.getPreviousNode(node);
-    if (!prev) {
-      return null;
-    }
+    const prev = this.getPreviousNode(targetNode);
+    if (!prev) return null;
 
-    const newNode = createNode(data);
-    newNode.next = node;
+    const newNode = createNode(data, targetNode);
     prev.next = newNode;
     return newNode;
   }
 
   insertAfter(node, data) {
-    const newNode = createNode(data);
-    newNode.next = node.next;
+    if (!node) return null;
+    const newNode = createNode(data, node.next);
     node.next = newNode;
+    return newNode;
   }
 
   remove(index) {
+    if (!this.head || index < 0) return null;
+
     if (index === 0) {
       const data = this.head.data;
       this.head = this.head.next;
       return data;
     }
 
-    let prev = null;
-    let node = this.head;
-    for (let i = 0; i < index; i++) {
-      prev = node;
-      node = node.next;
-    }
-    prev.next = node.next;
+    const prev = this.getNode(index - 1);
+    if (!prev || !prev.next) return null;
 
-    return node.data;
+    const removed = prev.next;
+    prev.next = removed.next;
+    return removed.data;
   }
 
   removeFirst() {
@@ -190,14 +196,14 @@ export default class SinglyLinkedList {
   }
 
   removeLast() {
-    if (!this.head) {
-      return undefined;
-    }
+    if (!this.head) return null;
+
     if (!this.head.next) {
       const data = this.head.data;
       this.head = null;
       return data;
     }
+
     let prev = null;
     let cur = this.head;
     while (cur.next) {
@@ -210,12 +216,10 @@ export default class SinglyLinkedList {
   }
 
   removeNode(node) {
-    if (!this.head || !node) {
-      return null;
-    }
+    if (!this.head || !node) return null;
 
-    if (this.head === node) {
-      const data = this.head.data;
+    if (node === this.head) {
+      const data = node.data;
       this.head = this.head.next;
       return data;
     }
