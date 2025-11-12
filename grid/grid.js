@@ -1,4 +1,4 @@
-export class Grid {
+export default class Grid {
   constructor(rows, cols) {
     this._rows = rows;
     this._cols = cols;
