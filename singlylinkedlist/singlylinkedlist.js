@@ -120,13 +120,13 @@ export default class SinglyLinkedList {
     while (arr.next && arr.next !== node) {
       arr = arr.next;
     }
-    return arr.next == node ? arr : null;
+    return arr.next === node ? arr : null;
   }
 
   insert(index, data) {
     const node = createNode(data);
 
-    if (index == 0) {
+    if (index === 0) {
       node.next = this.head;
       this.head = node;
       return;
@@ -140,7 +140,7 @@ export default class SinglyLinkedList {
   insertBefore(node, data) {
     if (!this.head || !node) return null;
 
-    if (node == this.head) {
+    if (node === this.head) {
       const newNode = createNode(data);
       newNode.next = this.head;
       this.head = newNode;
@@ -165,7 +165,7 @@ export default class SinglyLinkedList {
   }
 
   remove(index) {
-    if (index == 0) {
+    if (index === 0) {
       const data = this.head.data;
       this.head = this.head.next;
       return data;
@@ -214,7 +214,7 @@ export default class SinglyLinkedList {
       return null;
     }
 
-    if (this.head == node) {
+    if (this.head === node) {
       const data = this.head.data;
       this.head = this.head.next;
       return data;
