@@ -1,5 +1,3 @@
-import { constants } from "node:buffer";
-
 export class Grid {
   constructor(rows, cols) {
     this.rows = rows;
