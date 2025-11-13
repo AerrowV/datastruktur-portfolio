@@ -64,38 +64,28 @@ export class Grid {
     }
   }
 
-  neighbours({ row, col }) {
-    const list = [];
-    
-    for (let dr = -1; dr <= 1; dr++) {
-      for (let dc = -1; dc <= 1; dc++) {
-        if (dr === 0 && dc === 0) { 
-          continue;
-        }
+const neighbours = this.neighbours({ row, col });
+const values = new Array(4);
 
-        const r = row + dr;
-        const c = col + dc;
+for (let i = 0; i < 4; i++) {
+  values[i] = this.get(neighbours[i]);
+}
 
-        if (!this.outOfBounds(r, c)) {
-          list.push({ row: r, col: c });
-        }
-      }
-    }
-    return list;
+
+neighbourValues({ row, col }) {
+  if (this.outOfBounds(row, col)) {
+    return [];
   }
 
-  neighbourValues({ row, col }) {
-    if (this.outOfBounds(row, col)){
-      return [];
-    }
+  const neighbours = this.neighbours({ row, col });
+  const values = new Array(neighbours.length);
 
-    const values = [];
-    for (const n of this.neighbours({ row, col })) {
-      values.push(this.get(n));
-    }
-    
-    return values;
+  for (let i = 0; i < neighbours.length; i++) {
+    values[i] = this.get(neighbours[i]);
   }
+
+  return values;
+}
 
   nextInRow({ row, col }) {
     return this.east({ row, col });
