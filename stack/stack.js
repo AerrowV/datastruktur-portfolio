@@ -5,41 +5,27 @@ class Node {
   }
 }
 
-export class Queue {
+export default class Stack {
   constructor() {
     this.head = null;
-    this.tail = null;
     this._size = 0;
   }
 
-  enqueue(data) {
+  push(data) {
     const node = new Node(data);
-
-    if (!this.head) {
-      this.head = node;
-      this.tail = node;
-    } else {
-      this.tail.next = node;
-      this.tail = node;
-    }
-
+    node.next = this.head;
+    this.head = node;
     this._size++;
   }
 
-  dequeue() {
+  pop() {
     if (!this.head) {
       return null;
     }
 
     const data = this.head.data;
     this.head = this.head.next;
-
-    if (!this.head) {
-      this.tail = null;
-    }
-
     this._size--;
-
     return data;
   }
 
